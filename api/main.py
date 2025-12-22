@@ -11,7 +11,7 @@ app = FastAPI()
 def start(message):
     bot.reply_to(message, "Welcome!")
 
-@app.post("/telegram")
+@app.post("/")
 async def telegram_webhook(request: Request):
     json_data = await request.json()
     update = telebot.types.Update.de_json(json_data)
