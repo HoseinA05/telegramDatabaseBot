@@ -1,13 +1,19 @@
+import os
 import telebot
-import os 
+from fastapi import FastAPI, Request
 
+BOT_TOKEN = os.environ["BOT_TOKEN"]
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN");
 bot = telebot.TeleBot(BOT_TOKEN)
+app = FastAPI()
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-  bot.reply_to(message, "Welcome!");
+@bot.message_handler(commands=["start"])
+def start(message):
+    bot.reply_to(message, "Welcome!")
 
-print('start')
-bot.polling(non_stop=True)
+@app.post("/telegram")
+async def telegram_webhook(request: Request):
+    data = await request.body()
+    update = telebot.types.Update.de_json(data.decode("utf-8"))
+    bot.process_new_updates([update])
+    return {"ok": True}
