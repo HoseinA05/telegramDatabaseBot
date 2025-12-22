@@ -13,7 +13,7 @@ def start(message):
 
 @app.post("/telegram")
 async def telegram_webhook(request: Request):
-    data = await request.body()
-    update = telebot.types.Update.de_json(data.decode("utf-8"))
+    json_data = await request.json()
+    update = telebot.types.Update.de_json(json_data)
     bot.process_new_updates([update])
     return {"ok": True}
